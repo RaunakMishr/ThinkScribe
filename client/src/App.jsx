@@ -7,6 +7,7 @@ import AddBlog from './pages/Admin/AddBlog';
 import Dashboard from './pages/Admin/Dashboard';
 import ListBlog from './pages/Admin/ListBlog';
 import Comments from './pages/Admin/Comments';
+import Login from './components/admin/Login';
 
 const App = ()=>{
   return(
@@ -15,7 +16,7 @@ const App = ()=>{
         <Route path='/' element ={<Home/>}></Route>
         <Route path='/blog/:id' element={<Blog/>}></Route>
 
-        <Route path='/admin' element={<Layout/>}>
+        <Route path='/admin' element={true ? <Layout/> : <Login/>}>
           <Route index element={<Dashboard/>}></Route>
           <Route path='addBlog' element={<AddBlog/>}></Route>
           <Route path='listBlog' element={<ListBlog/>}></Route>
