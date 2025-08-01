@@ -8,6 +8,7 @@ import Dashboard from './pages/Admin/Dashboard';
 import ListBlog from './pages/Admin/ListBlog';
 import Comments from './pages/Admin/Comments';
 import Login from './components/admin/Login';
+import 'quill/dist/quill.snow.css' 
 
 const App = ()=>{
   return(
