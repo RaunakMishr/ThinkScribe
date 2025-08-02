@@ -4,10 +4,12 @@ import Quill from 'quill';
 import { moveItem } from 'motion/react';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
+import {parse} from 'marked';
 
 const AddBlog = () => {
   const {axios} = useAppContext()
   const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const editorRef = useRef(null)
   const quillRef = useRef(null)
@@ -17,6 +19,24 @@ const AddBlog = () => {
   const [subTitle, setSubTitle] = useState('');
   const [category, setCategory] = useState('Startup');
   const [isPublished, setIsPublished] = useState(false);
+
+  const generateContent = async()=>{
+    if(!title) return toast.error('Please enter a title')
+      try {
+        setLoading(true);
+        const {data} = await axios.post('/api/blog/generate',{prompt:title})
+        if(data.success){
+          quillRef.current.root.innerHTML = parse(data.content)
+        }else{
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+      finally{
+        setLoading(false)
+      }
+  }
 
   const onSubmitHandler = async(e)=>{
     try {
@@ -48,9 +68,7 @@ const AddBlog = () => {
     }
   }
 
-  const generateContent = async()=>{
-
-  }
+  
   useEffect(()=>{
     if(!quillRef.current && editorRef.current){
       quillRef.current = new Quill(editorRef.current,{theme:'snow'})
@@ -76,7 +94,7 @@ const AddBlog = () => {
         <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
           <div ref={editorRef} className=''></div>
 
-          <button type='button' onClick={generateContent} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>Generate with AI</button>
+          <button disabled={loading} type='button' onClick={generateContent} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>Generate with AI</button>
 
         </div>
 
