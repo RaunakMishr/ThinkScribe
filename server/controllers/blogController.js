@@ -23,17 +23,17 @@ export const addBlog = async(req, res)=>{
         })
         //optimise and transform image using imagekit
         const optimisedImageURL = imagekit.url({
-            path: uploadResponse.filePath,
+            path: response.filePath,
             transformation:[{
                 quality:'auto'}, //auto compression
                 {format:'webp'}, //convert to modern format
                 {width:'1280'}//width resizing
             ]
         })
-
+ 
         const image = optimisedImageURL;
 
-        await Blog.create({title, subTitle, description, category, image, isPublished})
+        await Blog.create({title, subTitle, description, category, image:image, isPublished})
         res.json({success:true, message:"Blog added successfully!"})
     } catch (error) {
         res.json({success:false, message:error.message})
@@ -68,11 +68,11 @@ export const getBlogById = async(req, res)=>{
 
 export const deleteBlogById = async(req, res)=>{
     try {
-        const { id } = req.body;
-        await Blog.findByIdAndDelete(id);
+        const { blogId } = req.params;
+        await Blog.findByIdAndDelete(blogId);
 
         //delete all comments associated with this blog
-        await Comment.deleteMany({blog:id});
+        await Comment.deleteMany({blog:blogId});
 
 
         res.json({success:true, message:"Blog deleted successfully!"})
@@ -108,7 +108,7 @@ export const getBlogComments=async(req, res)=>{
     try {
         const {blogId} = req.body;
         const comments = await Comment.find({blog:blogId, isApproved:true}).sort({createdAt:-1})
-        res.json({success:true, message:"Comment added for review"})
+        res.json({success:true, comments})
 
     } catch (error) {
         res.json({success:false, message:error.message})

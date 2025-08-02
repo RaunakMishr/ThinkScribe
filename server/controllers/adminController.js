@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import Blog from "../models/Blog.js";
+import Comment from "../models/Comment.js";
 
 export const adminLogin = async(req, res)=>{
     try{
@@ -64,7 +66,7 @@ export const approveCommentById = async(req, res)=>{
     try {
         const {id} = req.body;
         await Comment.findByIdAndUpdate(id, {isApproved:true});
-        res.json({success:true, message:"Comment  Successfully!"})
+        res.json({success:true, message:"Comment Approved Successfully!"})
     } catch (error) {
         res.json({success:false, message:error.message})
     }
